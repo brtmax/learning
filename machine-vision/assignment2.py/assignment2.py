@@ -40,3 +40,6 @@ def convolution2d(*, img, kernel) -> np.ndarray:
             
             img_result[u:kernel[0], v:kernel[1]] = patch
     return img_result
+
+# define the sobel kernel
+sobel_kernel = np.array([(-1,0,1), (-2,0,2), (-1,0,1)], dtype=float)
