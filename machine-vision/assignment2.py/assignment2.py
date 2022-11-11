@@ -22,7 +22,7 @@ def convolution2d(*, img, kernel) -> np.ndarray:
     assert img.dtype == float, "Image must be in float"
     assert kernel.dtype == float, "Kernel must be in float"
     assert kernel.shape[0] == kernel.shape[1], "Kernel must be a square"
-    assert kernel.shape[0] % 1 == 1, "Kernel size must be uneven"
+    assert kernel.shape[0] % 1 == 0, "Kernel size must be uneven"
     
     # calculate size of padding
     num_pad_pixels = (kernel.shape[0] - 1) / 2
@@ -43,3 +43,7 @@ def convolution2d(*, img, kernel) -> np.ndarray:
 
 # define the sobel kernel
 sobel_kernel = np.array([(-1,0,1), (-2,0,2), (-1,0,1)], dtype=float)
+
+result_own = convolution2d(img=gray_img, kernel=sobel_kernel)
+result_scipy = convolve2d(gray_img, sobel_kernel, mode="same", fillvalue=0)
+assert np.allclose(result_own, result_scipy), "Incorrect implementation of convolution2d"
