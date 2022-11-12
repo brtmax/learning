@@ -29,3 +29,9 @@ def hough_transofmr_tc(edge_image: np.ndarray, ps: np.ndarray, e=0.5) -> np.ndar
         acc[lines_on_point_idx] += 1
     return acc
 
+def span_tc_parameter_space(*, c_max: float, shape=(200, 200)) -> np.ndarray:
+    # Span values of theta over the desired range (-90.0 -> 90.0 degree in rad)
+    theta = np.arange(np.deg2rad(-90),np.deg2rad(90))
+    # Span values of c over the desired range
+    c = np.arange(0, c_max)
+    return np.meshgrid(theta, c)
