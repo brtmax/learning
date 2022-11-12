@@ -12,11 +12,11 @@ gray_img = skimage.io.imread("sources/triangle.png")
 plt.imshow(gray_img, cmap="gray")
 plt.show()
 
-def hough_transform_tc(edge_image: np.ndarray, ps: np.ndarray, e=0.5) -> np.ndarray:
-    t = ps[0]
+def hough_transform_tc(edge_image: np.ndarray, parameter_space: np.ndarray, e=0.5) -> np.ndarray:
+    t = parameter_space[0]
     cos_t = np.cos(t)
     sin_t = np.sin(t)
-    r = ps[1]
+    r = parameter_space[1]
     
     acc = np.zeros_like(t)
     
@@ -40,17 +40,34 @@ def span_tc_parameter_space(*, roh_max: float, shape=(200, 200)) -> np.ndarray:
 def local_peaks(acc, min_distance, num_peaks = 3):
     return peak_local_max(acc, min_distance, num_peaks)
     
-def convert_acc_to_lines(acc, ps, num_peaks = 3):
-    peaks = local_peaks(acc=acc, min_distance=0, num_peaks=num_peaks)
+def convert_acc_to_lines(acc, parameter_space, num_peaks = 3):
+    peaks = local_peaks(acc=acc, min_distance=10, num_peaks=num_peaks)
     lines = []
+    
     for peak in peaks:
         lines.append((peak[0], peak[1]))
     return lines
 
+def plot_lines(original_img, lines):
+    fig = plt.figure()
+    plt.imshow(original_img, cmap="gray")
+    xmin, xmax = fig.gca().get_xbound()
+    
+    for theta,roh in lines:
+        ymin = (roh -xmin* np.cos(theta))/np.sin(theta)
+        ymax = (roh -xmax* np.cos(theta))/np.sin(theta)
+
+        l = matplotlib.lines.Line2D([xmin, xmax], [ymin, ymax])
+        plt.gca().add_line(l)
+    
+    plt.show()
+    return
+
+
 
 # span parameter space and calcualte accumulator
-t_c = span_tc_parameter_space(roh_max=100, shape=(200,200))
-acc_tc = hough_transform_tc(edge_image=gray_img, ps=t_c)
+theta_roh = span_tc_parameter_space(roh_max=100, shape=(200,200))
+acc_tc = hough_transform_tc(edge_image=gray_img, parameter_space=theta_roh)
 
 # visualize
 fig, ax = plt.subplots()
@@ -62,3 +79,6 @@ ax.set_xticks(np.linspace(0, acc_tc.shape[1], 5))
 ax.set_xticklabels(np.round(np.deg2rad([-90,-45,0,45,90]), 2))
 ax.set_xlabel("Theta")
 plt.show()
+
+edges = convert_acc_to_lines(acc=acc_tc, parameter_space=theta_roh, num_peaks=3)
+plot_lines(original_img=gray_img, lines=edges)
