@@ -18,7 +18,7 @@ gray_img = plt.imread("/Users/maxbretschneider/Desktop/Development/learning/mach
 gray_img = gray_img.astype(float)
 
 # implement convolution2d function
-def convolution2d(*, img, kernel) -> np.ndarray:
+def convolution2d(img, kernel) -> np.ndarray:
     assert img.dtype == float, "Image must be in float"
     assert kernel.shape[0] == kernel.shape[1], "Kernel must be a square"
     assert kernel.shape[0] % 2 == 1, "Kernel size must be uneven"
@@ -63,8 +63,17 @@ def calculate_gradients(*, gray_img: np.ndarray, kernel_u: np.ndarray, kernel_v:
     
     return d_u, d_v, d_mag, d_angle
 
-result_own = convolution2d(img=gray_img, kernel=sobel_kernel_horizontal)
+d_u, d_v, d_mag, d_angle = calculate_gradients(gray_img=gray_img, kernel_u=sobel_kernel_horizontal, kernel_v=sobel_kernel_vertical)
+_, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4)
+figure_size = plt.gcf().get_size_inches()
+plt.gcf().set_size_inches(3 * figure_size)
+ax1.imshow(d_u, cmap="gray")
+ax2.imshow(d_v, cmap="gray")
+ax3.imshow(d_mag, cmap="gray")
+ax4.imshow(d_angle, cmap="hsv")
+plt.show()
 
+result_own = convolution2d(img=gray_img, kernel=sobel_kernel_horizontal)
 plt.imshow(result_own, cmap='gray')
 plt.show()
 
