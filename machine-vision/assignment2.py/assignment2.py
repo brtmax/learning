@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from scipy.signal import convolve2d
 
 # define the sobel kernel
-sobel_kernel_vertical = -1* np.array([[1, 0, -1],[2, 0, -2],[1, 0, -1]])
-sobel_kernel_horizontal = -1*np.array([[1, 2, 1],[0, 0, 0],[-1, -2, -1]])
+sobel_kernel_vertical = np.array([[1, 0, -1],[2, 0, -2],[1, 0, -1]])
+sobel_kernel_horizontal = np.array([[1, 2, 1],[0, 0, 0],[-1, -2, -1]])
 
 # Excuse the direct path
 gray_img = plt.imread("/Users/maxbretschneider/Desktop/Development/learning/machine-vision/assignment2.py/sources/postit2g.png")
@@ -20,7 +20,6 @@ gray_img = gray_img.astype(float)
 # implement convolution2d function
 def convolution2d(*, img, kernel) -> np.ndarray:
     assert img.dtype == float, "Image must be in float"
-    # assert kernel.dtype == float, "Kernel must be in float"
     assert kernel.shape[0] == kernel.shape[1], "Kernel must be a square"
     assert kernel.shape[0] % 2 == 1, "Kernel size must be uneven"
     
@@ -51,22 +50,24 @@ def convolution2d(*, img, kernel) -> np.ndarray:
             patch = patch.flatten() * kernel.flatten()
             convolved = patch.sum()
             
-            img_result[u - num_pad_pixels][v - num_pad_pixels] = np.sqrt(convolved**2) #np.sqrt(vertical_sum**2 + horizontal_sum**2)
+            img_result[u - num_pad_pixels][v - num_pad_pixels] = convolved**2
             
     return img_result
 
 
 def calculate_gradients(*, gray_img: np.ndarray, kernel_u: np.ndarray, kernel_v: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    return 1
+    d_u = convolution2d(gray_img, sobel_kernel_horizontal)
+    d_v = convolution2d(gray_img, sobel_kernel_vertical)
+    d_mag = np.sqrt(d_u + d_v)
+    d_angle = np.arctan(d_u / d_v)
+    
+    return d_u, d_v, d_mag, d_angle
 
 result_own = convolution2d(img=gray_img, kernel=sobel_kernel_horizontal)
 
 plt.imshow(result_own, cmap='gray')
 plt.show()
 
-
-
 result_scipy = convolve2d(gray_img, sobel_kernel_vertical, mode="same", fillvalue=0)
 plt.imshow(result_scipy, cmap='gray')
 plt.show()
-assert np.allclose(result_own, result_scipy), "Incorrect implementation of convolution2d"
