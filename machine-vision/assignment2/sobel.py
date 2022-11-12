@@ -11,8 +11,8 @@ from scipy.signal import convolve2d
 sobel_kernel_vertical = np.array([[1, 0, -1],[2, 0, -2],[1, 0, -1]])
 sobel_kernel_horizontal = np.array([[1, 2, 1],[0, 0, 0],[-1, -2, -1]])
 
-# Excuse the direct path
-gray_img = plt.imread("/Users/maxbretschneider/Desktop/Development/learning/machine-vision/assignment2.py/sources/postit2g.png")
+
+gray_img = plt.imread("assignment2/sources/postit2g.png")
 
 # ensure image is float type
 gray_img = gray_img.astype(float)
