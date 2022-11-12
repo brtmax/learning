@@ -11,7 +11,7 @@ gray_img = skimage.io.imread("sources/triangle.png")
 plt.imshow(gray_img, cmap="gray")
 plt.show()
 
-def hough_transofmr_tc(edge_image: np.ndarray, ps: np.ndarray, e=0.5) -> np.ndarray:
+def hough_transform_tc(edge_image: np.ndarray, ps: np.ndarray, e=0.5) -> np.ndarray:
     t = ps[0]
     cos_t = np.cos(t)
     sin_t = np.sin(t)
@@ -35,3 +35,18 @@ def span_tc_parameter_space(*, c_max: float, shape=(200, 200)) -> np.ndarray:
     # Span values of c over the desired range
     c = np.arange(0, c_max)
     return np.meshgrid(theta, c)
+
+# span parameter space and calcualte accumulator
+t_c = span_tc_parameter_space(c_max=100, shape=(200,200))
+acc_tc = hough_transform_tc(edge_image=gray_img, ps=t_c)
+
+# visualize
+fig, ax = plt.subplots()
+ax.imshow(acc_tc, cmap='gray')
+ax.set_yticks(np.linspace(0, acc_tc.shape[1]-1, 5))
+ax.set_yticklabels([-100,-50,0,50,100])
+ax.set_ylabel("c")
+ax.set_xticks(np.linspace(0, acc_tc.shape[1], 5))
+ax.set_xticklabels(np.round(np.deg2rad([-90,-45,0,45,90]), 2))
+ax.set_xlabel("t")
+plt.show()
