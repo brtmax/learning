@@ -38,14 +38,6 @@ def convolution2d(img, kernel) -> np.ndarray:
     for u in range(num_pad_pixels, img_padded.shape[0] - num_pad_pixels):
         for v in range(num_pad_pixels, img_padded.shape[1] - num_pad_pixels):
             
-            # vertical_patch = img_padded[u - num_pad_pixels: u + num_pad_pixels + 1, v - num_pad_pixels:v+num_pad_pixels+1]
-            # vertical_patch = vertical_patch.flatten() * sobel_kernel_vertical.flatten()
-            # vertical_sum = vertical_patch.sum()
-            
-            # horizontal_patch = img_padded[u - num_pad_pixels: u + num_pad_pixels + 1, v - num_pad_pixels : v + num_pad_pixels + 1]
-            # horizontal_patch = horizontal_patch.flatten() * sobel_kernel_horizontal.flatten()
-            # horizontal_sum = horizontal_patch.sum()
-            
             patch = img_padded[u - num_pad_pixels: u + num_pad_pixels + 1, v - num_pad_pixels : v + num_pad_pixels + 1]
             patch = patch.flatten() * kernel.flatten()
             convolved = patch.sum()
